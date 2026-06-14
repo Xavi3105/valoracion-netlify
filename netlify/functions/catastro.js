@@ -28,8 +28,9 @@ exports.handler = async function(event) {
   try {
     const response = await fetch(url, {
       headers: {
-        'Accept': 'application/json',
-        'User-Agent': 'Mozilla/5.0 (compatible; VOhome/1.0)'
+        'Accept': 'application/json, text/plain, */*',
+        'Accept-Language': 'es-ES,es;q=0.9',
+        'Cache-Control': 'no-cache'
       }
     });
 
