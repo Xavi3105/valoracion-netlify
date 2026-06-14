@@ -296,36 +296,105 @@
 
         <!-- Panel Manual -->
         <div class="cat-panel" id="panel-manual">
+          <div class="hint" style="margin-bottom:4px">Busca por dirección para obtener datos de Catastro, o introduce los datos directamente</div>
+
           <div class="field-row">
             <div>
-              <div class="field-label">Sup. útil (m²)</div>
-              <input class="field-input" type="number" id="v-m2-manual" placeholder="85" inputmode="decimal"/>
+              <div class="field-label">Provincia *</div>
+              <input class="field-input" type="text" id="v-provincia" placeholder="Madrid"/>
             </div>
             <div>
-              <div class="field-label">Año construcción</div>
-              <input class="field-input" type="number" id="v-anio-manual" placeholder="1990" inputmode="numeric"/>
+              <div class="field-label">Municipio *</div>
+              <input class="field-input" type="text" id="v-municipio" placeholder="Madrid"/>
             </div>
           </div>
           <div class="field-row">
             <div>
-              <div class="field-label">Habitaciones</div>
-              <input class="field-input" type="number" id="v-hab" placeholder="3" inputmode="numeric"/>
+              <div class="field-label">Tipo de vía</div>
+              <select class="field-input" id="v-tipovia">
+                <option value="CL">Calle</option>
+                <option value="AV">Avenida</option>
+                <option value="PZ">Plaza</option>
+                <option value="PS">Paseo</option>
+                <option value="RD">Ronda</option>
+                <option value="CR">Carretera</option>
+                <option value="TR">Travesía</option>
+                <option value="GL">Glorieta</option>
+                <option value="CM">Camino</option>
+                <option value="UR">Urbanización</option>
+              </select>
+            </div>
+            <div>
+              <div class="field-label">Nombre de vía *</div>
+              <input class="field-input" type="text" id="v-nomvia" placeholder="Gran Vía"/>
+            </div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-label">Número *</div>
+              <input class="field-input" type="text" id="v-numero" placeholder="1" inputmode="numeric"/>
+            </div>
+            <div>
+              <div class="field-label">Bloque</div>
+              <input class="field-input" type="text" id="v-bloque" placeholder="A"/>
+            </div>
+          </div>
+          <div class="field-row">
+            <div>
+              <div class="field-label">Escalera</div>
+              <input class="field-input" type="text" id="v-escalera" placeholder="1"/>
             </div>
             <div>
               <div class="field-label">Planta</div>
-              <input class="field-input" type="number" id="v-planta" placeholder="2" inputmode="numeric"/>
+              <input class="field-input" type="text" id="v-planta-dir" placeholder="3"/>
             </div>
           </div>
-          <div>
-            <div class="field-label">Municipio / Zona</div>
-            <input class="field-input" type="text" id="v-zona" placeholder="Canillejas, Madrid"/>
+          <div class="field-row">
+            <div>
+              <div class="field-label">Puerta</div>
+              <input class="field-input" type="text" id="v-puerta" placeholder="B"/>
+            </div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="rc-btn" id="dir-btn" onclick="consultarPorDireccion()" style="width:100%;justify-content:center">
+                <i class="ti ti-search"></i> Buscar
+              </button>
+            </div>
           </div>
-          <div>
-            <div class="field-label">Tipo de inmueble</div>
-            <select class="field-input" id="v-tipo">
-              <option>Piso</option><option>Ático</option><option>Dúplex</option>
-              <option>Chalet / Unifamiliar</option><option>Local comercial</option><option>Oficina</option>
-            </select>
+
+          <div class="warn-box" id="dir-warn">
+            <i class="ti ti-alert-triangle"></i>
+            <span id="dir-warn-msg">No se encontraron datos.</span>
+          </div>
+          <div class="cat-result" id="dir-result">
+            <div class="cat-result-title"><i class="ti ti-check"></i> Datos del Catastro</div>
+            <div class="cat-grid">
+              <div class="cat-item"><div class="cat-item-label">Sup. construida</div><div class="cat-item-val" id="dir-sup-cons">—</div></div>
+              <div class="cat-item"><div class="cat-item-label">Sup. útil</div><div class="cat-item-val" id="dir-sup-util">—</div></div>
+              <div class="cat-item"><div class="cat-item-label">Año construcción</div><div class="cat-item-val" id="dir-anio">—</div></div>
+              <div class="cat-item"><div class="cat-item-label">Uso</div><div class="cat-item-val" id="dir-uso">—</div></div>
+            </div>
+            <div class="cat-addr" id="dir-addr"></div>
+          </div>
+
+          <div style="border-top:1px solid var(--border);padding-top:12px;margin-top:4px">
+            <div class="hint" style="margin-bottom:10px">O introduce los datos manualmente:</div>
+            <div class="field-row">
+              <div>
+                <div class="field-label">Sup. útil (m²)</div>
+                <input class="field-input" type="number" id="v-m2-manual" placeholder="85" inputmode="decimal"/>
+              </div>
+              <div>
+                <div class="field-label">Año construcción</div>
+                <input class="field-input" type="number" id="v-anio-manual" placeholder="1990" inputmode="numeric"/>
+              </div>
+            </div>
+            <div>
+              <div class="field-label" style="margin-top:10px">Tipo de inmueble</div>
+              <select class="field-input" id="v-tipo">
+                <option>Piso</option><option>Ático</option><option>Dúplex</option>
+                <option>Chalet / Unifamiliar</option><option>Local comercial</option><option>Oficina</option>
+              </select>
+            </div>
           </div>
         </div>
 
@@ -840,27 +909,8 @@ async function consultarCatastro() {
     const res = await fetch(`/.netlify/functions/catastro?rc=${encodeURIComponent(rc)}`);
     const data = await res.json();
     if (data.error) { showWarn(data.error); return; }
-    const bico = data?.consulta_dnp?.bico;
-    if (!bico) { showWarn('No se encontraron datos para esa referencia catastral.'); return; }
-    const bi = Array.isArray(bico.bi)?bico.bi[0]:bico.bi;
-    const debi = bi?.debi||{};
-    const sup = debi?.sfc;
-    if (sup) {
-      document.getElementById('v-m2-manual').value = sup;
-      document.getElementById('v-m2-comp').value = sup;
-    }
-    const anio = debi?.ant||'—';
-    if (anio!=='—') document.getElementById('v-anio-manual').value = anio;
-    const uso = debi?.luso||debi?.cn||'—';
-    const dt = bi?.dt||{};
-    const locs = dt?.locs?.lous?.lourb||{};
-    const dir = [locs.nv,locs.pnp,locs.snp&&('Esc.'+locs.snp),locs.pt&&('Pl.'+locs.pt),locs.pu].filter(Boolean).join(', ');
-    const addrFull = [dir,dt?.nm,dt?.np].filter(Boolean).join(' · ');
-    document.getElementById('cat-sup-cons').textContent = debi?.sc ? debi.sc+' m²' : '—';
-    document.getElementById('cat-sup-util').textContent = sup ? sup+' m²' : '—';
-    document.getElementById('cat-anio').textContent = anio;
-    document.getElementById('cat-uso').textContent = uso;
-    document.getElementById('cat-addr').textContent = addrFull||'Dirección no disponible';
+    const ok = parseCatastroData(data, 'cat');
+    if (!ok) { showWarn('No se encontraron datos para esa referencia catastral.'); return; }
     showCatResult();
     showToast('Datos cargados del Catastro ✓');
   } catch(err) {
@@ -875,6 +925,74 @@ function showWarn(msg){document.getElementById('cat-warn-msg').textContent=msg;d
 function hideWarn(){document.getElementById('cat-warn').classList.remove('show');}
 function showCatResult(){document.getElementById('cat-result').classList.add('show');}
 function hideCatResult(){document.getElementById('cat-result').classList.remove('show');}
+
+async function consultarPorDireccion() {
+  const provincia = document.getElementById('v-provincia').value.trim();
+  const municipio = document.getElementById('v-municipio').value.trim();
+  const tipovia   = document.getElementById('v-tipovia').value;
+  const nomvia    = document.getElementById('v-nomvia').value.trim();
+  const numero    = document.getElementById('v-numero').value.trim();
+  if (!provincia || !municipio || !nomvia || !numero) {
+    showDirWarn('Provincia, municipio, vía y número son obligatorios.');
+    return;
+  }
+  const btn = document.getElementById('dir-btn');
+  btn.disabled = true;
+  btn.innerHTML = '<div class="spinner"></div> Buscando...';
+  hideDirWarn(); hideDirResult();
+  try {
+    const bloque   = document.getElementById('v-bloque').value.trim();
+    const escalera = document.getElementById('v-escalera').value.trim();
+    const planta   = document.getElementById('v-planta-dir').value.trim();
+    const puerta   = document.getElementById('v-puerta').value.trim();
+    let qs = `provincia=${encodeURIComponent(provincia)}&municipio=${encodeURIComponent(municipio)}&tipovia=${encodeURIComponent(tipovia)}&nomvia=${encodeURIComponent(nomvia)}&numero=${encodeURIComponent(numero)}`;
+    if (bloque)   qs += `&bloque=${encodeURIComponent(bloque)}`;
+    if (escalera) qs += `&escalera=${encodeURIComponent(escalera)}`;
+    if (planta)   qs += `&planta=${encodeURIComponent(planta)}`;
+    if (puerta)   qs += `&puerta=${encodeURIComponent(puerta)}`;
+    const res  = await fetch(`/.netlify/functions/catastro?${qs}`);
+    const data = await res.json();
+    if (data.error) { showDirWarn(data.error); return; }
+    parseCatastroData(data, 'dir');
+    showDirResult();
+    showToast('Datos cargados del Catastro ✓');
+  } catch(err) {
+    showDirWarn('Error de conexión. Inténtalo de nuevo.');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i class="ti ti-search"></i> Buscar';
+  }
+}
+
+function parseCatastroData(data, prefix) {
+  const bico = data?.consulta_dnp?.bico;
+  if (!bico) return false;
+  const bi   = Array.isArray(bico.bi) ? bico.bi[0] : bico.bi;
+  const debi = bi?.debi || {};
+  const sup  = debi?.sfc;
+  if (sup) {
+    document.getElementById('v-m2-manual').value = sup;
+    document.getElementById('v-m2-comp').value   = sup;
+  }
+  const anio = debi?.ant || '—';
+  if (anio !== '—') document.getElementById('v-anio-manual').value = anio;
+  const uso  = debi?.luso || debi?.cn || '—';
+  const dt   = bi?.dt || {};
+  const locs = dt?.locs?.lous?.lourb || {};
+  const dir  = [locs.nv, locs.pnp, locs.snp && ('Esc.'+locs.snp), locs.pt && ('Pl.'+locs.pt), locs.pu].filter(Boolean).join(', ');
+  const addr = [dir, dt?.nm, dt?.np].filter(Boolean).join(' · ');
+  document.getElementById(prefix+'-sup-cons').textContent = debi?.sc ? debi.sc+' m²' : '—';
+  document.getElementById(prefix+'-sup-util').textContent = sup ? sup+' m²' : '—';
+  document.getElementById(prefix+'-anio').textContent     = anio;
+  document.getElementById(prefix+'-uso').textContent      = uso;
+  document.getElementById(prefix+'-addr').textContent     = addr || 'Dirección no disponible';
+  return true;
+}
+
+function showDirWarn(msg){document.getElementById('dir-warn-msg').textContent=msg;document.getElementById('dir-warn').classList.add('show');}
+function hideDirWarn(){document.getElementById('dir-warn').classList.remove('show');}
+function showDirResult(){document.getElementById('dir-result').classList.add('show');}
+function hideDirResult(){document.getElementById('dir-result').classList.remove('show');}
 
 /* ══ VALORACIÓN ══ */
 function getVal(key){const s=document.querySelector(`#seg-${key} .seg-btn.sel`);return s?parseFloat(s.dataset.v):1.00;}
