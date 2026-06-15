@@ -1,0 +1,1047 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+  <meta name="theme-color" content="#00BCD4"/>
+  <meta name="apple-mobile-web-app-capable" content="yes"/>
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+  <meta name="apple-mobile-web-app-title" content="VOhome"/>
+  <meta name="mobile-web-app-capable" content="yes"/>
+  <meta name="application-name" content="VOhome Valoración"/>
+  <meta name="description" content="Herramienta profesional de valoración inmobiliaria VOhome Propiedades"/>
+  <link rel="manifest" href="data:application/json,{%22name%22:%22VOhome%20Valoraci%C3%B3n%22,%22short_name%22:%22VOhome%22,%22start_url%22:%22/%22,%22display%22:%22standalone%22,%22background_color%22:%22%23EFF2F5%22,%22theme_color%22:%2200BCD4%22,%22icons%22:[{%22src%22:%22data:image/svg+xml,%3Csvg%20xmlns%3D'http%3A//www.w3.org/2000/svg'%20viewBox%3D'0%200%20192%20192'%3E%3Crect%20width%3D'192'%20height%3D'192'%20fill%3D'%2300BCD4'/%3E%3C/svg%3E%22,%22sizes%22:%22192x192%22,%22type%22:%22image/svg+xml%22}]}"/>
+  <title>VOhome · Valoración</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css"/>
+  <style>
+    :root{
+      --cyan:#00BCD4;--cyan-light:#E0F7FA;--cyan-mid:#B2EBF2;--cyan-dark:#0097A7;--cyan-deep:#006064;
+      --bg:#F0F4F7;--surface:#FFFFFF;--surface2:#F8FAFC;
+      --text-primary:#0F1923;--text-secondary:#546E7A;--text-muted:#90A4AE;
+      --border:rgba(0,0,0,.06);--border2:rgba(0,0,0,.1);
+      --icon-bg:#E0F7FA;--input-bg:#F8FAFC;--input-border:#DDE3E8;
+      --result-bg:linear-gradient(135deg,#E0F7FA 0%,#E8F5E9 100%);
+      --result-border:rgba(0,188,212,.25);--result-value:#00796B;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.08);
+      --shadow-md:0 4px 16px rgba(0,0,0,.08);
+      --shadow-cyan:0 4px 20px rgba(0,188,212,.25);
+      --danger:#EF5350;--warn-bg:#FFF8E1;--warn-border:#FFE082;
+      --r-sm:10px;--r-md:14px;--r-lg:20px;--r-xl:24px;
+    }
+    [data-theme="dark"]{
+      --bg:#0A0F14;--surface:#111B24;--surface2:#162130;
+      --text-primary:#ECF0F1;--text-secondary:#90A4AE;--text-muted:#546E7A;
+      --border:rgba(255,255,255,.06);--border2:rgba(255,255,255,.12);
+      --icon-bg:rgba(0,188,212,.12);--input-bg:#0D1822;--input-border:rgba(255,255,255,.09);
+      --result-bg:linear-gradient(135deg,rgba(0,188,212,.08) 0%,rgba(0,150,136,.08) 100%);
+      --result-border:rgba(0,188,212,.2);--result-value:#4DD0E1;
+      --shadow-sm:0 1px 3px rgba(0,0,0,.3);--shadow-md:0 4px 16px rgba(0,0,0,.3);
+      --warn-bg:rgba(255,193,7,.07);--warn-border:rgba(255,193,7,.25);
+    }
+    *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+    html{height:100%;-webkit-text-size-adjust:100%}
+    body{min-height:100%;font-family:'Inter',sans-serif;background:var(--bg);color:var(--text-primary);overflow-x:hidden;transition:background .25s,color .25s}
+
+    /* ── HEADER ── */
+    .hdr{background:var(--surface);border-bottom:2px solid var(--cyan);padding:0 16px;position:sticky;top:0;z-index:100;transition:background .25s}
+    .hdr-top{display:flex;align-items:center;gap:10px;height:56px}
+    .logo-wrap{display:flex;align-items:center;gap:8px;flex:1;min-width:0}
+    .logo-svg{width:44px;height:30px;flex-shrink:0}
+    .logo-text{display:flex;flex-direction:column;line-height:1}
+    .logo-text b{font-size:14px;font-weight:700;color:var(--text-primary);letter-spacing:-.2px}
+    .logo-text span{font-size:9px;font-weight:600;color:var(--text-muted);letter-spacing:.8px;text-transform:uppercase}
+    .hdr-date{font-size:11px;color:var(--text-muted);flex-shrink:0}
+    .profile-btn{width:34px;height:34px;border-radius:50%;background:var(--icon-bg);border:1.5px solid var(--cyan-mid);display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--cyan-dark);font-size:17px;flex-shrink:0;transition:all .2s}
+    [data-theme="dark"] .profile-btn{border-color:rgba(0,188,212,.3)}
+    .profile-btn:active{background:var(--cyan-light)}
+    .theme-bar{display:flex;justify-content:center;gap:3px;padding:8px 0 10px}
+    .theme-btn{display:flex;align-items:center;gap:4px;padding:5px 11px;border-radius:20px;border:1.5px solid var(--input-border);background:transparent;color:var(--text-muted);font-size:11px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;transition:all .2s}
+    .theme-btn i{font-size:13px}
+    .theme-btn.active{border-color:var(--cyan);background:var(--icon-bg);color:var(--cyan-dark)}
+    [data-theme="dark"] .theme-btn.active{color:var(--cyan)}
+
+    /* ── INSTALL BANNER ── */
+    .install-banner{display:none;align-items:center;gap:10px;padding:10px 16px;background:var(--cyan);color:white;font-size:12px;font-weight:600}
+    .install-banner.show{display:flex}
+    .install-banner button{margin-left:auto;background:white;color:var(--cyan-dark);border:none;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;font-family:'Inter',sans-serif;flex-shrink:0}
+    .install-banner .dismiss{background:transparent;color:rgba(255,255,255,.7);padding:5px;margin-left:4px}
+
+    /* ── NAV ── */
+    .bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--surface);border-top:1px solid var(--border);display:grid;grid-template-columns:1fr 1fr;z-index:100;padding-bottom:env(safe-area-inset-bottom);transition:background .25s}
+    .nav-btn{display:flex;flex-direction:column;align-items:center;padding:10px 0 8px;gap:3px;background:none;border:none;cursor:pointer;color:var(--text-muted);font-size:10px;font-weight:600;font-family:'Inter',sans-serif;transition:color .2s;position:relative}
+    .nav-btn i{font-size:22px}
+    .nav-btn.active{color:var(--cyan)}
+    .nav-btn.active::after{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:24px;height:2px;background:var(--cyan);border-radius:0 0 2px 2px}
+
+    /* ── SCREENS ── */
+    .screen{display:none;padding:16px 16px 100px}
+    .screen.active{display:block}
+    .greeting{font-size:26px;font-weight:900;letter-spacing:-.5px;margin-bottom:2px}
+    .greeting-sub{font-size:13px;color:var(--text-secondary);margin-bottom:18px}
+
+    /* ── CARDS ── */
+    .card{background:var(--surface);border-radius:var(--r-lg);padding:16px;margin-bottom:10px;border:1px solid var(--border);box-shadow:var(--shadow-sm);transition:background .25s}
+    .card-hdr{display:flex;align-items:center;gap:12px;cursor:pointer;user-select:none}
+    .card-icon{width:38px;height:38px;border-radius:var(--r-sm);background:var(--icon-bg);display:flex;align-items:center;justify-content:center;color:var(--cyan);font-size:17px;flex-shrink:0}
+    .card-title{font-size:15px;font-weight:700;flex:1;color:var(--text-primary)}
+    .card-chev{color:var(--text-muted);font-size:15px;transition:transform .25s}
+    .card-chev.open{transform:rotate(180deg)}
+    .card-body{margin-top:14px;padding-top:14px;border-top:1px solid var(--border);display:none;flex-direction:column;gap:13px}
+    .card-body.open{display:flex}
+
+    /* ── FORM ── */
+    .flabel{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:6px}
+    .finput{width:100%;background:var(--input-bg);border:1.5px solid var(--input-border);border-radius:var(--r-md);padding:12px 14px;font-size:15px;font-family:'Inter',sans-serif;color:var(--text-primary);outline:none;transition:border-color .2s,background .25s;-webkit-appearance:none;appearance:none}
+    .finput:focus{border-color:var(--cyan);background:var(--surface)}
+    select.finput{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%2300BCD4' stroke-width='2.5'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
+    select.finput option{background:var(--surface);color:var(--text-primary)}
+    .frow{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .fhint{font-size:11px;color:var(--text-muted);margin-top:5px;line-height:1.4}
+
+    /* ── TABS ── */
+    .tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:12px}
+    .tab{padding:10px;border-radius:var(--r-sm);border:1.5px solid var(--input-border);background:var(--input-bg);color:var(--text-secondary);font-size:12px;font-weight:600;font-family:'Inter',sans-serif;cursor:pointer;text-align:center;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:5px}
+    .tab i{font-size:14px}
+    .tab.active{background:var(--icon-bg);border-color:var(--cyan);color:var(--cyan-dark)}
+    [data-theme="dark"] .tab.active{color:var(--cyan)}
+    .tab-panel{display:none;flex-direction:column;gap:12px}
+    .tab-panel.active{display:flex}
+
+    /* ── RC SEARCH ── */
+    .rc-row{display:flex;gap:8px}
+    .rc-row .finput{font-family:'JetBrains Mono',monospace;font-size:13px;letter-spacing:.5px;text-transform:uppercase;flex:1}
+    .rc-btn{flex-shrink:0;padding:0 14px;border-radius:var(--r-md);border:none;background:var(--cyan);color:#fff;font-size:13px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:opacity .2s;height:48px}
+    .rc-btn:disabled{opacity:.5;cursor:not-allowed}
+    .rc-btn:active{opacity:.85}
+
+    /* ── WARN / CATASTRO RESULT ── */
+    .warn{background:var(--warn-bg);border:1px solid var(--warn-border);border-radius:var(--r-sm);padding:10px 12px;font-size:12px;color:var(--text-secondary);display:none;align-items:flex-start;gap:7px}
+    .warn.show{display:flex}
+    .warn i{color:#F9A825;font-size:15px;flex-shrink:0;margin-top:1px}
+    .cat-result{background:var(--icon-bg);border-radius:var(--r-md);padding:12px;border:1px solid var(--result-border);display:none}
+    .cat-result.show{display:block}
+    .cat-result-title{font-size:10px;font-weight:700;color:var(--cyan-dark);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px;display:flex;align-items:center;gap:5px}
+    [data-theme="dark"] .cat-result-title{color:var(--cyan)}
+    .cat-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:8px}
+    .cat-item{background:var(--surface);border-radius:8px;padding:8px 10px}
+    .cat-item-lbl{font-size:10px;color:var(--text-muted);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+    .cat-item-val{font-size:13px;font-weight:700;color:var(--text-primary);font-family:'JetBrains Mono',monospace}
+    .cat-addr{font-size:11px;color:var(--text-secondary);padding-top:8px;border-top:1px solid var(--result-border)}
+
+    /* ── VALOR BASE ── */
+    .pfx-wrap{position:relative}
+    .pfx-wrap .pfx{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:15px;color:var(--text-muted);font-weight:600;pointer-events:none}
+    .pfx-wrap .finput{padding-left:28px}
+    .calc-badge{background:var(--icon-bg);border:1px solid var(--result-border);border-radius:8px;padding:8px 12px;font-size:13px;color:var(--cyan-dark);font-family:'JetBrains Mono',monospace;font-weight:600;display:none}
+    .calc-badge.show{display:block}
+    [data-theme="dark"] .calc-badge{color:var(--cyan)}
+
+    /* ── COEFS ── */
+    .seg-opts{display:flex;flex-direction:column;gap:4px}
+    .seg-btn{padding:10px 12px;border-radius:var(--r-sm);border:1.5px solid var(--input-border);background:var(--input-bg);color:var(--text-secondary);font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;text-align:left;transition:all .15s;display:flex;justify-content:space-between;align-items:center;gap:8px}
+    .seg-btn .coef{font-family:'JetBrains Mono',monospace;font-size:11px;opacity:.45;flex-shrink:0}
+    .seg-btn.sel{background:var(--icon-bg);border-color:var(--cyan);color:var(--cyan-dark);font-weight:700}
+    .seg-btn.sel .coef{opacity:1;color:var(--cyan-dark)}
+    [data-theme="dark"] .seg-btn.sel{color:var(--cyan)}
+    [data-theme="dark"] .seg-btn.sel .coef{color:var(--cyan)}
+    .seg-btn:active{transform:scale(.99)}
+
+    /* ── CTA ── */
+    .cta-wrap{position:sticky;bottom:70px;background:linear-gradient(to top,var(--bg) 60%,transparent);padding:12px 0 6px;margin-top:4px}
+    .cta-btn{width:100%;padding:17px;border-radius:var(--r-lg);border:none;background:var(--cyan);color:#fff;font-size:16px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;box-shadow:var(--shadow-cyan);transition:opacity .15s,transform .1s;display:flex;align-items:center;justify-content:center;gap:8px}
+    .cta-btn:active{opacity:.88;transform:scale(.99)}
+
+    /* ── RESULTADO ── */
+    .result-card{background:var(--result-bg);border-radius:var(--r-xl);border:1.5px solid var(--result-border);padding:22px;margin-bottom:10px;display:none}
+    .result-card.show{display:block}
+    .result-lbl{font-size:10px;font-weight:700;color:var(--cyan-dark);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px}
+    [data-theme="dark"] .result-lbl{color:var(--cyan)}
+    .result-price{font-family:'JetBrains Mono',monospace;font-size:42px;font-weight:500;color:var(--result-value);letter-spacing:-1.5px;line-height:1;margin-bottom:4px}
+    .result-range{font-size:12px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;margin-bottom:18px}
+    .bkdn{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--result-border);padding-top:14px;margin-bottom:14px}
+    .bkdn-row{display:flex;justify-content:space-between;align-items:center;font-size:13px}
+    .bkdn-lbl{color:var(--text-secondary)}
+    .bkdn-val{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:600}
+    .bkdn-val.up{color:#2E7D32}.bkdn-val.dn{color:#C62828}
+    .conf-bar{height:3px;background:var(--input-border);border-radius:2px;overflow:hidden;margin-bottom:4px}
+    .conf-fill{height:100%;background:var(--cyan);border-radius:2px;width:0%;transition:width 1.2s ease}
+    .conf-row{display:flex;justify-content:space-between;font-size:10px;color:var(--text-muted);margin-bottom:16px}
+    .act-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px}
+    .act-btn{padding:11px 6px;border-radius:var(--r-sm);border:1.5px solid var(--cyan);background:transparent;color:var(--cyan-dark);font-size:12px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:4px;transition:background .15s}
+    .act-btn i{font-size:18px}
+    [data-theme="dark"] .act-btn{color:var(--cyan)}
+    .act-btn:active{background:var(--icon-bg)}
+
+    /* ── TESTIGOS ── */
+    .screen-title{font-size:22px;font-weight:900;letter-spacing:-.4px;margin-bottom:3px}
+    .screen-sub{font-size:13px;color:var(--text-secondary);margin-bottom:16px}
+    .stats-bar{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:14px;margin-bottom:10px;display:none}
+    .stats-bar.show{display:block}
+    .stats-title{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.7px;margin-bottom:10px}
+    .stats-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+    .stat-item{background:var(--input-bg);border-radius:var(--r-sm);padding:10px 12px}
+    .stat-lbl{font-size:10px;color:var(--text-muted);margin-bottom:2px;font-weight:600;text-transform:uppercase;letter-spacing:.5px}
+    .stat-val{font-family:'JetBrains Mono',monospace;font-size:16px;font-weight:500}
+    .filter-row{display:flex;gap:6px;margin-bottom:10px;overflow-x:auto;padding-bottom:2px;scrollbar-width:none}
+    .filter-row::-webkit-scrollbar{display:none}
+    .f-chip{flex-shrink:0;padding:6px 12px;border-radius:20px;border:1.5px solid var(--input-border);background:var(--surface);color:var(--text-secondary);font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;font-family:'Inter',sans-serif}
+    .f-chip.active{background:var(--icon-bg);border-color:var(--cyan);color:var(--cyan-dark)}
+    [data-theme="dark"] .f-chip.active{color:var(--cyan)}
+    .t-card{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:14px;margin-bottom:8px}
+    .t-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:10px}
+    .t-icon{width:36px;height:36px;border-radius:9px;background:var(--icon-bg);color:var(--cyan);display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0}
+    .t-info{flex:1;min-width:0}
+    .t-dir{font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:2px}
+    .t-meta{font-size:11px;color:var(--text-secondary)}
+    .t-price{font-family:'JetBrains Mono',monospace;font-size:14px;font-weight:500;color:var(--cyan-dark);white-space:nowrap}
+    [data-theme="dark"] .t-price{color:var(--cyan)}
+    .t-pm2{font-size:10px;color:var(--text-muted);font-family:'JetBrains Mono',monospace;text-align:right}
+    .t-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+    .tag{font-size:10px;font-weight:600;padding:3px 8px;border-radius:6px;background:var(--input-bg);color:var(--text-secondary);border:1px solid var(--input-border)}
+    .tag.estado{background:var(--icon-bg);color:var(--cyan-dark);border-color:rgba(0,188,212,.2)}
+    [data-theme="dark"] .tag.estado{color:var(--cyan)}
+    .t-footer{display:flex;align-items:center;justify-content:space-between;border-top:1px solid var(--border);padding-top:9px}
+    .t-date{font-size:10px;color:var(--text-muted);display:flex;align-items:center;gap:3px}
+    .icon-btn{width:30px;height:30px;border-radius:7px;border:1px solid var(--input-border);background:var(--input-bg);color:var(--text-secondary);display:flex;align-items:center;justify-content:center;font-size:14px;cursor:pointer;transition:all .15s}
+    .icon-btn:active{border-color:var(--danger);color:var(--danger)}
+    .empty-state{text-align:center;padding:40px 20px}
+    .empty-icon{font-size:38px;color:var(--input-border);margin-bottom:12px}
+    .empty-title{font-size:15px;font-weight:700;color:var(--text-secondary);margin-bottom:4px}
+    .empty-sub{font-size:13px;color:var(--text-muted)}
+
+    /* ── OVERLAYS ── */
+    .overlay{display:none;position:fixed;inset:0;background:var(--bg);z-index:150;overflow-y:auto;padding-bottom:30px}
+    .overlay.show{display:block}
+    .ov-hdr{background:var(--surface);border-bottom:2px solid var(--cyan);padding:0 16px;display:flex;align-items:center;gap:10px;height:56px;position:sticky;top:0;z-index:10}
+    .back-btn{width:34px;height:34px;border-radius:9px;border:1.5px solid var(--input-border);background:var(--input-bg);color:var(--text-primary);display:flex;align-items:center;justify-content:center;font-size:17px;cursor:pointer;flex-shrink:0}
+    .ov-title{font-size:15px;font-weight:700}
+    .ov-body{padding:16px}
+    .fsec{background:var(--surface);border-radius:var(--r-lg);padding:16px;margin-bottom:10px;border:1px solid var(--border)}
+    .fsec-title{font-size:10px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:.8px;margin-bottom:13px;display:flex;align-items:center;gap:5px}
+    .fsec-title i{font-size:13px;color:var(--cyan)}
+    .ffield{margin-bottom:11px}
+    .ffield:last-child{margin-bottom:0}
+    .tog-group{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+    .tog-btn{padding:9px;border-radius:9px;border:1.5px solid var(--input-border);background:var(--input-bg);color:var(--text-secondary);font-size:13px;font-weight:500;font-family:'Inter',sans-serif;cursor:pointer;text-align:center;transition:all .15s}
+    .tog-btn.sel{background:var(--icon-bg);border-color:var(--cyan);color:var(--cyan-dark);font-weight:700}
+    [data-theme="dark"] .tog-btn.sel{color:var(--cyan)}
+    .save-btn{width:100%;padding:15px;border-radius:var(--r-md);border:none;background:var(--cyan);color:#fff;font-size:15px;font-weight:700;font-family:'Inter',sans-serif;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:7px;box-shadow:var(--shadow-cyan)}
+    .save-btn:active{opacity:.88}
+
+    /* ── CONFIG ── */
+    .cfg-row{display:flex;align-items:center;justify-content:space-between;padding:12px 0;border-bottom:1px solid var(--border)}
+    .cfg-row:last-child{border-bottom:none}
+    .cfg-lbl{font-size:14px;font-weight:500}
+    .cfg-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+
+    /* ── FAB ── */
+    .fab{position:fixed;bottom:80px;right:16px;width:50px;height:50px;border-radius:15px;background:var(--cyan);color:#fff;border:none;display:flex;align-items:center;justify-content:center;font-size:22px;cursor:pointer;box-shadow:var(--shadow-cyan);transition:transform .15s,opacity .2s;z-index:90}
+    .fab:active{transform:scale(.93)}
+    .fab.hidden{opacity:0;pointer-events:none}
+
+    /* ── SPINNER / TOAST ── */
+    .spinner{display:inline-block;width:15px;height:15px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;flex-shrink:0}
+    @keyframes spin{to{transform:rotate(360deg)}}
+    .toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%) translateY(16px);background:#1A2332;color:#fff;padding:10px 18px;border-radius:12px;font-size:13px;font-weight:600;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,.2)}
+    .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+    /* ── INFORME ── */
+    .inf-section{background:var(--surface);border-radius:var(--r-md);border:1px solid var(--border);padding:14px;margin-bottom:10px}
+    .inf-section-title{font-size:10px;font-weight:700;color:var(--cyan-dark);text-transform:uppercase;letter-spacing:.8px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+    [data-theme="dark"] .inf-section-title{color:var(--cyan)}
+    .inf-row{display:flex;justify-content:space-between;align-items:center;padding:6px 0;border-bottom:1px solid var(--border);font-size:13px}
+    .inf-row:last-child{border-bottom:none}
+    .inf-lbl{color:var(--text-secondary)}
+    .inf-val{font-weight:600;text-align:right;max-width:60%}
+    .inf-coef{font-family:'JetBrains Mono',monospace;font-size:11px;margin-left:6px}
+    .inf-coef.up{color:#2E7D32}.inf-coef.dn{color:#C62828}
+
+    /* ── PRINT ── */
+    @media print{
+      .hdr,.bottom-nav,.fab,.ov-hdr,.theme-bar,.install-banner{display:none!important}
+      .overlay{position:static!important;overflow:visible!important}
+      #ov-informe{display:block!important}
+      #screen-val,#screen-test{display:none!important}
+      body{background:#fff!important;color:#000!important}
+    }
+  </style>
+</head>
+<body>
+<div id="app" data-theme="light">
+
+  <!-- INSTALL BANNER -->
+  <div class="install-banner" id="install-banner">
+    <i class="ti ti-download" style="font-size:16px;flex-shrink:0"></i>
+    <span>Instala la app en tu móvil para acceso rápido</span>
+    <button onclick="installApp()">Instalar</button>
+    <button class="dismiss" onclick="dismissInstall()"><i class="ti ti-x" style="font-size:14px"></i></button>
+  </div>
+
+  <!-- HEADER -->
+  <div class="hdr">
+    <div class="hdr-top">
+      <div class="logo-wrap">
+        <svg class="logo-svg" viewBox="0 0 88 60" xmlns="http://www.w3.org/2000/svg">
+          <polygon points="16,0 88,0 72,60 0,60" fill="#00BCD4"/>
+          <polygon points="22,12 34,12 44,38 54,12 66,12 44,48" fill="white"/>
+          <circle cx="62" cy="26" r="12" fill="white"/>
+          <circle cx="62" cy="38" r="6" fill="#00BCD4"/>
+        </svg>
+        <div class="logo-text">
+          <b>VOhome</b>
+          <span>Propiedades</span>
+        </div>
+      </div>
+      <div class="hdr-date" id="hdr-date"></div>
+      <button class="profile-btn" onclick="openConfig()" aria-label="Configuración">
+        <i class="ti ti-user-circle"></i>
+      </button>
+    </div>
+    <div class="theme-bar">
+      <button class="theme-btn active" id="btn-light" onclick="setTheme('light')"><i class="ti ti-sun"></i> Claro</button>
+      <button class="theme-btn" id="btn-dark" onclick="setTheme('dark')"><i class="ti ti-moon"></i> Oscuro</button>
+      <button class="theme-btn" id="btn-auto" onclick="setTheme('auto')"><i class="ti ti-device-laptop"></i> Auto</button>
+    </div>
+  </div>
+
+  <!-- SCREEN: VALORAR -->
+  <div class="screen active" id="screen-val">
+    <div class="greeting" id="greeting">Buenas tardes</div>
+    <div class="greeting-sub" id="greeting-sub">Introduce los datos del inmueble</div>
+
+    <!-- CATASTRO -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('cat')">
+        <div class="card-icon"><i class="ti ti-search"></i></div>
+        <span class="card-title">Datos del inmueble</span>
+        <i class="ti ti-chevron-down card-chev open" id="chev-cat"></i>
+      </div>
+      <div class="card-body open" id="body-cat">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('rc',this,'cat')"><i class="ti ti-id-badge"></i> Ref. catastral</button>
+          <button class="tab" onclick="switchTab('manual',this,'cat')"><i class="ti ti-pencil"></i> Manual</button>
+        </div>
+        <div class="tab-panel active" id="cat-panel-rc">
+          <div>
+            <div class="flabel">Referencia catastral</div>
+            <div class="rc-row">
+              <input class="finput" type="text" id="v-rc" placeholder="8308413VK4780G0009TU" maxlength="20" autocomplete="off" autocapitalize="characters"/>
+              <button class="rc-btn" id="rc-btn" onclick="consultarRC()"><i class="ti ti-database"></i> Consultar</button>
+            </div>
+            <div class="fhint">14, 18 o 20 caracteres · sin espacios</div>
+          </div>
+          <div class="warn" id="cat-warn"><i class="ti ti-alert-triangle"></i><span id="cat-warn-msg"></span></div>
+          <div class="cat-result" id="cat-result">
+            <div class="cat-result-title"><i class="ti ti-check"></i> Datos del Catastro</div>
+            <div class="cat-grid">
+              <div class="cat-item"><div class="cat-item-lbl">Sup. construida</div><div class="cat-item-val" id="c-sup-cons">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Sup. útil</div><div class="cat-item-val" id="c-sup-util">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Año construcción</div><div class="cat-item-val" id="c-anio">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Uso</div><div class="cat-item-val" id="c-uso">—</div></div>
+            </div>
+            <div class="cat-addr" id="c-addr"></div>
+          </div>
+        </div>
+        <div class="tab-panel" id="cat-panel-manual">
+          <div class="frow">
+            <div><div class="flabel">Provincia</div><input class="finput" type="text" id="v-provincia" placeholder="Madrid"/></div>
+            <div><div class="flabel">Municipio</div><input class="finput" type="text" id="v-municipio" placeholder="Madrid"/></div>
+          </div>
+          <div class="frow">
+            <div>
+              <div class="flabel">Tipo vía</div>
+              <select class="finput" id="v-tipovia">
+                <option value="CL">Calle</option><option value="AV">Avenida</option>
+                <option value="PZ">Plaza</option><option value="PS">Paseo</option>
+                <option value="RD">Ronda</option><option value="CR">Carretera</option>
+                <option value="TR">Travesía</option><option value="GL">Glorieta</option>
+              </select>
+            </div>
+            <div><div class="flabel">Nombre de vía</div><input class="finput" type="text" id="v-nomvia" placeholder="Gran Vía"/></div>
+          </div>
+          <div class="frow">
+            <div><div class="flabel">Número</div><input class="finput" type="text" id="v-numero" placeholder="1" inputmode="numeric"/></div>
+            <div><div class="flabel">Bloque</div><input class="finput" type="text" id="v-bloque" placeholder="A"/></div>
+          </div>
+          <div class="frow">
+            <div><div class="flabel">Escalera</div><input class="finput" type="text" id="v-escalera" placeholder="1"/></div>
+            <div><div class="flabel">Planta</div><input class="finput" type="text" id="v-planta-dir" placeholder="3"/></div>
+          </div>
+          <div class="frow">
+            <div><div class="flabel">Puerta</div><input class="finput" type="text" id="v-puerta" placeholder="B"/></div>
+            <div style="display:flex;align-items:flex-end">
+              <button class="rc-btn" id="dir-btn" onclick="consultarDir()" style="width:100%;justify-content:center"><i class="ti ti-search"></i> Buscar</button>
+            </div>
+          </div>
+          <div class="warn" id="dir-warn"><i class="ti ti-alert-triangle"></i><span id="dir-warn-msg"></span></div>
+          <div class="cat-result" id="dir-result">
+            <div class="cat-result-title"><i class="ti ti-check"></i> Datos del Catastro</div>
+            <div class="cat-grid">
+              <div class="cat-item"><div class="cat-item-lbl">Sup. construida</div><div class="cat-item-val" id="d-sup-cons">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Sup. útil</div><div class="cat-item-val" id="d-sup-util">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Año construcción</div><div class="cat-item-val" id="d-anio">—</div></div>
+              <div class="cat-item"><div class="cat-item-lbl">Uso</div><div class="cat-item-val" id="d-uso">—</div></div>
+            </div>
+            <div class="cat-addr" id="d-addr"></div>
+          </div>
+          <div style="border-top:1px solid var(--border);padding-top:12px">
+            <div class="fhint" style="margin-bottom:10px">O introduce directamente:</div>
+            <div class="frow">
+              <div><div class="flabel">Sup. útil (m²)</div><input class="finput" type="number" id="v-m2" placeholder="85" inputmode="decimal"/></div>
+              <div><div class="flabel">Año construcción</div><input class="finput" type="number" id="v-anio" placeholder="1990" inputmode="numeric"/></div>
+            </div>
+            <div style="margin-top:10px">
+              <div class="flabel">Tipo de inmueble</div>
+              <select class="finput" id="v-tipo">
+                <option>Piso</option><option>Ático</option><option>Dúplex</option>
+                <option>Chalet / Unifamiliar</option><option>Local comercial</option><option>Oficina</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VALOR BASE -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('base')">
+        <div class="card-icon"><i class="ti ti-currency-euro"></i></div>
+        <span class="card-title">Valor base comparables</span>
+        <i class="ti ti-chevron-down card-chev open" id="chev-base"></i>
+      </div>
+      <div class="card-body open" id="body-base">
+        <div class="tabs">
+          <button class="tab active" onclick="switchTab('total',this,'precio')"><i class="ti ti-home"></i> Precio total</button>
+          <button class="tab" onclick="switchTab('m2',this,'precio')"><i class="ti ti-ruler"></i> €/m²</button>
+        </div>
+        <div class="tab-panel active" id="precio-panel-total">
+          <div>
+            <div class="flabel">Precio total del comparable (€)</div>
+            <div class="pfx-wrap"><span class="pfx">€</span><input class="finput" type="number" id="v-precio-total" placeholder="250.000" inputmode="decimal" oninput="calcPm2()"/></div>
+          </div>
+          <div>
+            <div class="flabel">Superficie comparable (m²)</div>
+            <input class="finput" type="number" id="v-m2-comp" placeholder="85" inputmode="decimal" oninput="calcPm2()"/>
+          </div>
+          <div class="calc-badge" id="badge-pm2"></div>
+          <div class="fhint">El €/m² se calcula automáticamente</div>
+        </div>
+        <div class="tab-panel" id="precio-panel-m2">
+          <div>
+            <div class="flabel">€/m² de comparables</div>
+            <div class="pfx-wrap"><span class="pfx">€</span><input class="finput" type="number" id="v-base-m2" placeholder="3.200" inputmode="decimal"/></div>
+            <div class="fhint">Precio medio €/m² de inmuebles similares en la zona</div>
+          </div>
+        </div>
+        <div class="fhint" id="testigos-hint" style="display:none"></div>
+      </div>
+    </div>
+
+    <!-- COEFS -->
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('estado')">
+        <div class="card-icon"><i class="ti ti-tool"></i></div>
+        <span class="card-title">Estado de la vivienda</span>
+        <i class="ti ti-chevron-down card-chev open" id="chev-estado"></i>
+      </div>
+      <div class="card-body open" id="body-estado"><div class="seg-opts" id="seg-estado"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('edificio')">
+        <div class="card-icon"><i class="ti ti-building"></i></div>
+        <span class="card-title">Edificio / Planta</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-edificio"></i>
+      </div>
+      <div class="card-body" id="body-edificio"><div class="seg-opts" id="seg-edificio"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('lumi')">
+        <div class="card-icon"><i class="ti ti-sun"></i></div>
+        <span class="card-title">Luminosidad / Orientación</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-lumi"></i>
+      </div>
+      <div class="card-body" id="body-lumi"><div class="seg-opts" id="seg-lumi"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('dist')">
+        <div class="card-icon"><i class="ti ti-layout"></i></div>
+        <span class="card-title">Distribución</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-dist"></i>
+      </div>
+      <div class="card-body" id="body-dist"><div class="seg-opts" id="seg-dist"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('anexos')">
+        <div class="card-icon"><i class="ti ti-car"></i></div>
+        <span class="card-title">Anexos</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-anexos"></i>
+      </div>
+      <div class="card-body" id="body-anexos">
+        <div class="fhint" style="margin-bottom:2px">Selecciona todos los que apliquen</div>
+        <div class="seg-opts" id="seg-anexos"></div>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('micro')">
+        <div class="card-icon"><i class="ti ti-map-pin"></i></div>
+        <span class="card-title">Microubicación</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-micro"></i>
+      </div>
+      <div class="card-body" id="body-micro"><div class="seg-opts" id="seg-micro"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('cal')">
+        <div class="card-icon"><i class="ti ti-diamond"></i></div>
+        <span class="card-title">Calidades</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-cal"></i>
+      </div>
+      <div class="card-body" id="body-cal"><div class="seg-opts" id="seg-cal"></div></div>
+    </div>
+    <div class="card">
+      <div class="card-hdr" onclick="toggleCard('epc')">
+        <div class="card-icon"><i class="ti ti-bolt"></i></div>
+        <span class="card-title">Eficiencia energética</span>
+        <i class="ti ti-chevron-down card-chev" id="chev-epc"></i>
+      </div>
+      <div class="card-body" id="body-epc"><div class="seg-opts" id="seg-epc"></div></div>
+    </div>
+
+    <!-- RESULTADO -->
+    <div class="result-card" id="result-card">
+      <div class="result-lbl">Valoración estimada</div>
+      <div class="result-price" id="result-price">€0</div>
+      <div class="result-range" id="result-range">—</div>
+      <div class="bkdn" id="bkdn"></div>
+      <div class="conf-bar"><div class="conf-fill" id="conf-fill"></div></div>
+      <div class="conf-row"><span>Multiplicador total</span><span id="mult-total">—</span></div>
+      <div class="act-row">
+        <button class="act-btn" onclick="compartir()"><i class="ti ti-share"></i><span>Compartir</span></button>
+        <button class="act-btn" onclick="generarInforme()"><i class="ti ti-file-text"></i><span>Informe</span></button>
+        <button class="act-btn" onclick="nuevaValoracion()"><i class="ti ti-refresh"></i><span>Nueva</span></button>
+      </div>
+    </div>
+
+    <div class="cta-wrap">
+      <button class="cta-btn" id="cta-btn" onclick="valorar()">
+        <i class="ti ti-calculator"></i> Calcular valoración
+      </button>
+    </div>
+  </div>
+
+  <!-- SCREEN: TESTIGOS -->
+  <div class="screen" id="screen-test">
+    <div class="screen-title">Testigos</div>
+    <div class="screen-sub">Comparables de mercado</div>
+    <div class="stats-bar" id="stats-bar">
+      <div class="stats-title">Resumen</div>
+      <div class="stats-grid">
+        <div class="stat-item"><div class="stat-lbl">Media €/m²</div><div class="stat-val" id="st-media">—</div></div>
+        <div class="stat-item"><div class="stat-lbl">Rango €/m²</div><div class="stat-val" id="st-rango">—</div></div>
+        <div class="stat-item"><div class="stat-lbl">Precio medio</div><div class="stat-val" id="st-precio">—</div></div>
+        <div class="stat-item"><div class="stat-lbl">m² medio</div><div class="stat-val" id="st-m2">—</div></div>
+      </div>
+    </div>
+    <div class="filter-row" id="filter-row" style="display:none">
+      <button class="f-chip active" onclick="filtrar(this,'todos')">Todos</button>
+      <button class="f-chip" onclick="filtrar(this,'Piso')">Pisos</button>
+      <button class="f-chip" onclick="filtrar(this,'Ático')">Áticos</button>
+      <button class="f-chip" onclick="filtrar(this,'Chalet')">Chalets</button>
+      <button class="f-chip" onclick="filtrar(this,'Local')">Locales</button>
+    </div>
+    <div id="test-container">
+      <div class="empty-state" id="empty-test">
+        <div class="empty-icon"><i class="ti ti-building-community"></i></div>
+        <div class="empty-title">Sin testigos todavía</div>
+        <div class="empty-sub">Añade comparables para calibrar las valoraciones</div>
+      </div>
+    </div>
+  </div>
+
+  <button class="fab hidden" id="fab" onclick="openAddForm()" aria-label="Añadir testigo"><i class="ti ti-plus"></i></button>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="nav-val" onclick="switchScreen('val')">
+      <i class="ti ti-home"></i><span>Valorar</span>
+    </button>
+    <button class="nav-btn" id="nav-test" onclick="switchScreen('test')">
+      <i class="ti ti-building-community"></i><span id="nav-test-lbl">Testigos</span>
+    </button>
+  </nav>
+
+  <!-- OVERLAY: CONFIG -->
+  <div class="overlay" id="ov-config">
+    <div class="ov-hdr">
+      <button class="back-btn" onclick="closeOverlay('ov-config')"><i class="ti ti-arrow-left"></i></button>
+      <span class="ov-title">Configuración</span>
+    </div>
+    <div class="ov-body">
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-user"></i> Perfil del agente</div>
+        <div class="ffield"><div class="flabel">Nombre</div><input class="finput" type="text" id="cfg-nombre" placeholder="Tu nombre"/></div>
+        <div class="ffield"><div class="flabel">Agencia</div><input class="finput" type="text" id="cfg-agencia" placeholder="VOhome Propiedades"/></div>
+        <div class="ffield"><div class="flabel">Oficina</div><input class="finput" type="text" id="cfg-oficina" placeholder="Canillejas, Madrid"/></div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-map-pin"></i> Zona de trabajo</div>
+        <div class="ffield"><div class="flabel">Municipio principal</div><input class="finput" type="text" id="cfg-municipio" placeholder="Madrid"/></div>
+        <div class="ffield">
+          <div class="flabel">Precio medio zona (€/m²)</div>
+          <input class="finput" type="number" id="cfg-pm2" placeholder="3.200" inputmode="decimal"/>
+          <div class="fhint">Se usará como valor base por defecto</div>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-settings"></i> Preferencias</div>
+        <div class="cfg-row">
+          <div><div class="cfg-lbl">Modo precio por defecto</div><div class="cfg-sub">Cómo introducir el valor base</div></div>
+        </div>
+        <div class="tog-group" style="margin-top:8px">
+          <button class="tog-btn sel" id="cfg-modo-total" onclick="setCfgModo('total')">Precio total</button>
+          <button class="tog-btn" id="cfg-modo-m2" onclick="setCfgModo('m2')">€/m²</button>
+        </div>
+      </div>
+      <button class="save-btn" onclick="saveConfig()"><i class="ti ti-check"></i> Guardar</button>
+    </div>
+  </div>
+
+  <!-- OVERLAY: AÑADIR TESTIGO -->
+  <div class="overlay" id="ov-testigo">
+    <div class="ov-hdr">
+      <button class="back-btn" onclick="closeOverlay('ov-testigo')"><i class="ti ti-arrow-left"></i></button>
+      <span class="ov-title">Nuevo testigo</span>
+    </div>
+    <div class="ov-body">
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-map-pin"></i> Ubicación</div>
+        <div class="ffield"><div class="flabel">Dirección / Referencia</div><input class="finput" type="text" id="t-dir" placeholder="Calle, número o referencia"/></div>
+        <div class="frow">
+          <div class="ffield"><div class="flabel">Barrio</div><input class="finput" type="text" id="t-zona" placeholder="Canillejas"/></div>
+          <div class="ffield"><div class="flabel">Municipio</div><input class="finput" type="text" id="t-mun" placeholder="Madrid"/></div>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-building"></i> Inmueble</div>
+        <div class="ffield"><div class="flabel">Tipo</div>
+          <select class="finput" id="t-tipo"><option>Piso</option><option>Ático</option><option>Dúplex</option><option>Chalet</option><option>Local</option><option>Oficina</option></select>
+        </div>
+        <div class="frow">
+          <div class="ffield"><div class="flabel">Sup. útil (m²)</div><input class="finput" type="number" id="t-m2" placeholder="80" inputmode="decimal"/></div>
+          <div class="ffield"><div class="flabel">Habitaciones</div><input class="finput" type="number" id="t-hab" placeholder="3" inputmode="numeric"/></div>
+        </div>
+        <div class="frow">
+          <div class="ffield"><div class="flabel">Planta</div><input class="finput" type="number" id="t-planta" placeholder="2" inputmode="numeric"/></div>
+          <div class="ffield"><div class="flabel">Año</div><input class="finput" type="number" id="t-anio" placeholder="1995" inputmode="numeric"/></div>
+        </div>
+        <div class="ffield">
+          <div class="flabel">Estado</div>
+          <div class="tog-group" id="t-estado-group">
+            <button class="tog-btn" onclick="selTog(this,'t-estado-group','t-estado')">A reformar</button>
+            <button class="tog-btn sel" onclick="selTog(this,'t-estado-group','t-estado')">Buen estado</button>
+            <button class="tog-btn" onclick="selTog(this,'t-estado-group','t-estado')">Reformado</button>
+            <button class="tog-btn" onclick="selTog(this,'t-estado-group','t-estado')">Obra nueva</button>
+          </div>
+          <input type="hidden" id="t-estado" value="Buen estado"/>
+        </div>
+      </div>
+      <div class="fsec">
+        <div class="fsec-title"><i class="ti ti-currency-euro"></i> Precio</div>
+        <div class="ffield"><div class="flabel">Precio oferta (€)</div><input class="finput" type="number" id="t-precio" placeholder="180000" inputmode="decimal"/></div>
+        <div class="ffield"><div class="flabel">Fuente</div>
+          <select class="finput" id="t-fuente"><option>Visita directa</option><option>Idealista</option><option>Fotocasa</option><option>Habitaclia</option><option>MLS</option><option>Escritura pública</option><option>Otro</option></select>
+        </div>
+        <div class="ffield"><div class="flabel">Notas</div><input class="finput" type="text" id="t-notas" placeholder="Observaciones..."/></div>
+      </div>
+      <button class="save-btn" onclick="saveTestigo()"><i class="ti ti-check"></i> Guardar testigo</button>
+    </div>
+  </div>
+
+  <!-- OVERLAY: INFORME -->
+  <div class="overlay" id="ov-informe">
+    <div class="ov-hdr">
+      <button class="back-btn" onclick="closeOverlay('ov-informe')"><i class="ti ti-arrow-left"></i></button>
+      <span class="ov-title">Informe de valoración</span>
+      <button class="rc-btn" onclick="window.print()" style="margin-left:auto;height:34px;padding:0 12px;font-size:12px"><i class="ti ti-printer"></i> Imprimir</button>
+    </div>
+    <div class="ov-body" id="informe-body"></div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+</div>
+
+<script>
+/* ══ COEFS ══ */
+const COEFS = {
+  estado:[{l:'Reforma integral premium',v:1.12},{l:'Reforma integral buena',v:1.08},{l:'Buen estado',v:1.03},{l:'Estado normal / actualizable',v:0.97},{l:'A reformar',v:0.90},{l:'Reforma integral necesaria',v:0.85}],
+  edificio:[{l:'Ático con terraza',v:1.10},{l:'Ático sin terraza',v:1.05},{l:'Planta alta con ascensor',v:1.03},{l:'Planta media con ascensor',v:1.00},{l:'1ª–2ª sin ascensor',v:0.97},{l:'3ª o sup. sin ascensor',v:0.90},{l:'Bajo exterior',v:0.95},{l:'Bajo interior',v:0.88}],
+  lumi:[{l:'Excelente (sur / muy exterior)',v:1.05},{l:'Buena',v:1.02},{l:'Normal',v:1.00},{l:'Deficiente / oscuro',v:0.95},{l:'Interior sin luz natural',v:0.90}],
+  dist:[{l:'Excelente',v:1.05},{l:'Buena',v:1.02},{l:'Normal',v:1.00},{l:'Mejorable',v:0.97},{l:'Mala',v:0.92}],
+  anexos:[{l:'Garaje',v:1.06},{l:'Segunda plaza garaje',v:1.03},{l:'Trastero',v:1.02},{l:'Terraza grande útil',v:1.07},{l:'Terraza pequeña',v:1.03},{l:'Jardín privado',v:1.08},{l:'Piscina comunitaria',v:1.03},{l:'Urbanización cerrada',v:1.02}],
+  micro:[{l:'Zona tranquila + vistas',v:1.05},{l:'Buena calle / entorno',v:1.02},{l:'Normal',v:1.00},{l:'Ruido moderado',v:0.97},{l:'Vía rápida / tren',v:0.92},{l:'Entorno degradado',v:0.85}],
+  cal:[{l:'Alta gama',v:1.05},{l:'Buenas calidades',v:1.02},{l:'Estándar',v:1.00},{l:'Básicas',v:0.97}],
+  epc:[{l:'A – B',v:1.05},{l:'C',v:1.02},{l:'D – E',v:1.00},{l:'F – G',v:0.97}]
+};
+const DEFS = {estado:2,edificio:3,lumi:2,dist:2,micro:1,cal:2,epc:2};
+
+function buildSeg(key) {
+  const el = document.getElementById('seg-'+key);
+  COEFS[key].forEach((item,i) => {
+    const btn = document.createElement('button');
+    btn.className='seg-btn'+(i===DEFS[key]?' sel':'');
+    btn.dataset.v=item.v; btn.dataset.key=key;
+    const pct=((item.v-1)*100).toFixed(0), sign=item.v>=1?'+':'';
+    btn.innerHTML=`<span>${item.l}</span><span class="coef">${sign}${pct}%</span>`;
+    btn.onclick=()=>{el.querySelectorAll('.seg-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');};
+    el.appendChild(btn);
+  });
+}
+function buildAnexos(){
+  const el=document.getElementById('seg-anexos');
+  COEFS.anexos.forEach(item=>{
+    const btn=document.createElement('button');
+    btn.className='seg-btn';btn.dataset.v=item.v;
+    const pct=((item.v-1)*100).toFixed(0);
+    btn.innerHTML=`<span>${item.l}</span><span class="coef">+${pct}%</span>`;
+    btn.onclick=()=>btn.classList.toggle('sel');
+    el.appendChild(btn);
+  });
+}
+['estado','edificio','lumi','dist','micro','cal','epc'].forEach(buildSeg);
+buildAnexos();
+
+/* ══ STATE ══ */
+const S={theme:'light',testigos:JSON.parse(localStorage.getItem('voh_testigos')||'[]'),filtro:'todos',config:JSON.parse(localStorage.getItem('voh_config')||'{}'),precioTab:'total',catTab:'rc'};
+
+/* ══ INSTALL ══ */
+let deferredPrompt=null;
+window.addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); deferredPrompt=e;
+  if(!localStorage.getItem('voh_install_dismissed')) document.getElementById('install-banner').classList.add('show');
+});
+function installApp(){if(deferredPrompt){deferredPrompt.prompt();deferredPrompt.userChoice.then(()=>{deferredPrompt=null;dismissInstall();});}}
+function dismissInstall(){document.getElementById('install-banner').classList.remove('show');localStorage.setItem('voh_install_dismissed','1');}
+
+/* ══ THEME ══ */
+const mq=window.matchMedia('(prefers-color-scheme: dark)');
+setTheme(localStorage.getItem('voh_theme')||'light');
+function setTheme(m){S.theme=m;localStorage.setItem('voh_theme',m);['light','dark','auto'].forEach(x=>document.getElementById('btn-'+x).classList.toggle('active',x===m));const dark=m==='auto'?mq.matches:m==='dark';document.getElementById('app').setAttribute('data-theme',dark?'dark':'light');}
+mq.addEventListener('change',e=>{if(S.theme==='auto')document.getElementById('app').setAttribute('data-theme',e.matches?'dark':'light');});
+
+/* ══ DATE ══ */
+const DAYS=['domingo','lunes','martes','miércoles','jueves','viernes','sábado'];
+const MONTHS=['enero','febrero','marzo','abril','mayo','junio','julio','agosto','septiembre','octubre','noviembre','diciembre'];
+const now=new Date();
+document.getElementById('hdr-date').textContent=DAYS[now.getDay()]+' '+now.getDate()+' '+MONTHS[now.getMonth()];
+const h=now.getHours();
+document.getElementById('greeting').textContent=h<13?'Buenos días':h<21?'Buenas tardes':'Buenas noches';
+
+function applyConfig(){
+  const c=S.config;
+  if(c.nombre){document.getElementById('greeting-sub').textContent='Hola, '+c.nombre+(c.agencia?' · '+c.agencia:'');}
+  if(c.pm2) document.getElementById('v-base-m2').value=c.pm2;
+  if(c.modoBase) switchPrecioTab(c.modoBase);
+}
+applyConfig();
+
+/* ══ NAV ══ */
+function switchScreen(s){['val','test'].forEach(x=>{document.getElementById('screen-'+x).classList.toggle('active',x===s);document.getElementById('nav-'+x).classList.toggle('active',x===s);});document.getElementById('fab').classList.toggle('hidden',s!=='test');}
+function toggleCard(id){const b=document.getElementById('body-'+id),c=document.getElementById('chev-'+id);b.classList.toggle('open');c.classList.toggle('open',b.classList.contains('open'));}
+
+/* ══ TABS ══ */
+function switchTab(tab,btn,group){
+  const prefix=group==='cat'?'cat-panel-':'precio-panel-';
+  btn.closest('.tabs').querySelectorAll('.tab').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll(`[id^="${prefix}"]`).forEach(p=>p.classList.remove('active'));
+  document.getElementById(prefix+tab).classList.add('active');
+  if(group==='precio') S.precioTab=tab;
+  if(group==='cat') S.catTab=tab;
+}
+function switchPrecioTab(tab){
+  const btns=document.querySelectorAll('#body-base .tab');
+  btns[tab==='total'?0:1].classList.add('active');
+  btns[tab==='total'?1:0].classList.remove('active');
+  document.getElementById('precio-panel-total').classList.toggle('active',tab==='total');
+  document.getElementById('precio-panel-m2').classList.toggle('active',tab==='m2');
+  S.precioTab=tab;
+}
+
+/* ══ PRECIO CALC ══ */
+function calcPm2(){
+  const p=parseFloat(document.getElementById('v-precio-total').value);
+  const m=parseFloat(document.getElementById('v-m2-comp').value);
+  const badge=document.getElementById('badge-pm2');
+  if(p&&m){badge.textContent='€/m² calculado: '+Math.round(p/m).toLocaleString('es-ES')+' €/m²';badge.classList.add('show');}
+  else badge.classList.remove('show');
+}
+
+function getBaseM2(){
+  if(S.precioTab==='total'){const p=parseFloat(document.getElementById('v-precio-total').value),m=parseFloat(document.getElementById('v-m2-comp').value);return(p&&m)?Math.round(p/m):null;}
+  return parseFloat(document.getElementById('v-base-m2').value)||null;
+}
+function getM2(){return parseFloat(document.getElementById('v-m2').value)||parseFloat(document.getElementById('v-m2-comp').value)||null;}
+
+/* ══ CATASTRO ══ */
+function parseCat(data,prefix){
+  const bico=data?.consulta_dnp?.bico;if(!bico)return false;
+  const bi=Array.isArray(bico.bi)?bico.bi[0]:bico.bi;
+  const debi=bi?.debi||{};
+  const sup=debi?.sfc;
+  if(sup){document.getElementById('v-m2').value=sup;document.getElementById('v-m2-comp').value=sup;}
+  const anio=debi?.ant||'—';
+  if(anio!=='—')document.getElementById('v-anio').value=anio;
+  const dt=bi?.dt||{},locs=dt?.locs?.lous?.lourb||{};
+  const dir=[locs.nv,locs.pnp,locs.snp&&('Esc.'+locs.snp),locs.pt&&('Pl.'+locs.pt),locs.pu].filter(Boolean).join(', ');
+  const addr=[dir,dt?.nm,dt?.np].filter(Boolean).join(' · ');
+  document.getElementById(prefix+'-sup-cons').textContent=debi?.sc?debi.sc+' m²':'—';
+  document.getElementById(prefix+'-sup-util').textContent=sup?sup+' m²':'—';
+  document.getElementById(prefix+'-anio').textContent=anio;
+  document.getElementById(prefix+'-uso').textContent=debi?.luso||debi?.cn||'—';
+  document.getElementById(prefix+'-addr').textContent=addr||'Dirección no disponible';
+  return true;
+}
+
+async function consultarRC(){
+  const rc=document.getElementById('v-rc').value.trim().replace(/\s/g,'').toUpperCase();
+  if(rc.length<14){showWarn('cat','La referencia debe tener al menos 14 caracteres.');return;}
+  const btn=document.getElementById('rc-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Consultando...';
+  hideWarn('cat');document.getElementById('cat-result').classList.remove('show');
+  try{
+    const res=await fetch(`/.netlify/functions/catastro?rc=${encodeURIComponent(rc)}`);
+    const data=await res.json();
+    if(data.error){showWarn('cat',data.error);return;}
+    if(!parseCat(data,'c')){showWarn('cat','No se encontraron datos.');return;}
+    document.getElementById('cat-result').classList.add('show');
+    showToast('Datos cargados del Catastro ✓');
+  }catch(err){showWarn('cat','Error de conexión. Inténtalo de nuevo.');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-database"></i> Consultar';}
+}
+
+async function consultarDir(){
+  const prov=document.getElementById('v-provincia').value.trim();
+  const mun=document.getElementById('v-municipio').value.trim();
+  const nomvia=document.getElementById('v-nomvia').value.trim();
+  const numero=document.getElementById('v-numero').value.trim();
+  if(!prov||!mun||!nomvia||!numero){showWarn('dir','Provincia, municipio, vía y número son obligatorios.');return;}
+  const btn=document.getElementById('dir-btn');
+  btn.disabled=true;btn.innerHTML='<div class="spinner"></div> Buscando...';
+  hideWarn('dir');document.getElementById('dir-result').classList.remove('show');
+  try{
+    const tv=document.getElementById('v-tipovia').value;
+    const bl=document.getElementById('v-bloque').value.trim();
+    const esc=document.getElementById('v-escalera').value.trim();
+    const pl=document.getElementById('v-planta-dir').value.trim();
+    const pu=document.getElementById('v-puerta').value.trim();
+    let qs=`provincia=${encodeURIComponent(prov)}&municipio=${encodeURIComponent(mun)}&tipovia=${encodeURIComponent(tv)}&nomvia=${encodeURIComponent(nomvia)}&numero=${encodeURIComponent(numero)}`;
+    if(bl)qs+=`&bloque=${encodeURIComponent(bl)}`;
+    if(esc)qs+=`&escalera=${encodeURIComponent(esc)}`;
+    if(pl)qs+=`&planta=${encodeURIComponent(pl)}`;
+    if(pu)qs+=`&puerta=${encodeURIComponent(pu)}`;
+    const res=await fetch(`/.netlify/functions/catastro?${qs}`);
+    const data=await res.json();
+    if(data.error){showWarn('dir',data.error);return;}
+    if(!parseCat(data,'d')){showWarn('dir','No se encontraron datos.');return;}
+    document.getElementById('dir-result').classList.add('show');
+    showToast('Datos cargados del Catastro ✓');
+  }catch(err){showWarn('dir','Error de conexión. Inténtalo de nuevo.');}
+  finally{btn.disabled=false;btn.innerHTML='<i class="ti ti-search"></i> Buscar';}
+}
+
+function showWarn(p,msg){document.getElementById(p+'-warn-msg').textContent=msg;document.getElementById(p+'-warn').classList.add('show');}
+function hideWarn(p){document.getElementById(p+'-warn').classList.remove('show');}
+
+/* ══ VALORAR ══ */
+function getVal(k){const s=document.querySelector(`#seg-${k} .seg-btn.sel`);return s?parseFloat(s.dataset.v):1;}
+function getAnexos(){let p=1;document.querySelectorAll('#seg-anexos .seg-btn.sel').forEach(b=>{p*=parseFloat(b.dataset.v);});return p;}
+
+function valorar(){
+  const base=getBaseM2(), m2=getM2();
+  if(!base){showToast('Introduce el valor base de comparables');return;}
+  if(!m2){showToast('Introduce la superficie útil');return;}
+  const coefs={'Estado':getVal('estado'),'Edificio/Planta':getVal('edificio'),'Luminosidad':getVal('lumi'),'Distribución':getVal('dist'),'Anexos':getAnexos(),'Microubicación':getVal('micro'),'Calidades':getVal('cal'),'Eficiencia':getVal('epc')};
+  const tpms=S.testigos.map(t=>t.pm2);
+  let baseAj=base,testN=0;
+  if(tpms.length>0){const med=tpms.reduce((a,b)=>a+b,0)/tpms.length;baseAj=base*.5+med*.5;testN=tpms.length;}
+  let mult=Object.values(coefs).reduce((a,b)=>a*b,1);
+  mult=Math.max(.8,Math.min(1.25,mult));
+  const pm2f=Math.round(baseAj*mult),total=Math.round(pm2f*m2),low=Math.round(total*.95),high=Math.round(total*1.05);
+  document.getElementById('result-card').classList.add('show');
+  const el=document.getElementById('result-price'),t0=performance.now();
+  (function tick(n){const p=Math.min((n-t0)/1100,1),e=1-Math.pow(1-p,3);el.textContent='€'+Math.round(e*total).toLocaleString('es-ES');if(p<1)requestAnimationFrame(tick);})(t0);
+  document.getElementById('result-range').textContent='€'+low.toLocaleString('es-ES')+' – €'+high.toLocaleString('es-ES');
+  document.getElementById('mult-total').textContent=mult.toFixed(4)+' ×';
+  const bd=document.getElementById('bkdn');
+  bd.innerHTML=`<div class="bkdn-row"><span class="bkdn-lbl">Base €/m²</span><span class="bkdn-val">€${Math.round(baseAj).toLocaleString('es-ES')}</span></div>`;
+  if(testN>0)bd.innerHTML+=`<div class="bkdn-row"><span class="bkdn-lbl">Testigos</span><span class="bkdn-val">${testN} comparable${testN>1?'s':''}</span></div>`;
+  Object.entries(coefs).forEach(([k,v])=>{if(k==='Anexos'&&v===1)return;const pct=((v-1)*100).toFixed(1),sign=v>=1?'+':'',cls=v>=1?'up':'dn';bd.innerHTML+=`<div class="bkdn-row"><span class="bkdn-lbl">${k}</span><span class="bkdn-val ${cls}">${sign}${pct}% ×${v.toFixed(2)}</span></div>`;});
+  bd.innerHTML+=`<div class="bkdn-row" style="border-top:1px solid var(--result-border);padding-top:8px;margin-top:2px"><span class="bkdn-lbl" style="font-weight:700">€/m² final</span><span class="bkdn-val" style="font-weight:700">€${pm2f.toLocaleString('es-ES')}</span></div>`;
+  setTimeout(()=>{document.getElementById('conf-fill').style.width=Math.min(95,70+testN*5)+'%';},300);
+  document.getElementById('result-card').scrollIntoView({behavior:'smooth',block:'nearest'});
+  document.getElementById('cta-btn').innerHTML='<i class="ti ti-refresh"></i> Recalcular';
+}
+
+function nuevaValoracion(){document.getElementById('result-card').classList.remove('show');document.getElementById('conf-fill').style.width='0%';document.getElementById('cta-btn').innerHTML='<i class="ti ti-calculator"></i> Calcular valoración';window.scrollTo({top:0,behavior:'smooth'});}
+
+function compartir(){
+  const precio=document.getElementById('result-price').textContent,rango=document.getElementById('result-range').textContent;
+  const texto=`Valoración VOhome\nPrecio estimado: ${precio}\nRango: ${rango}`;
+  if(navigator.share)navigator.share({title:'Valoración VOhome',text:texto});
+  else navigator.clipboard.writeText(texto).then(()=>showToast('Copiado al portapapeles'));
+}
+
+/* ══ INFORME ══ */
+function generarInforme(){
+  const precio=document.getElementById('result-price').textContent;
+  const rango=document.getElementById('result-range').textContent;
+  const mult=document.getElementById('mult-total').textContent;
+  const c=S.config;
+  const agente=c.nombre||'—',agencia=c.agencia||'VOhome Propiedades',oficina=c.oficina||'';
+  const fecha=new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'long',year:'numeric'});
+  const m2=getM2()||'—',anio=document.getElementById('v-anio').value||'—';
+  const tipo=document.getElementById('v-tipo')?.value||'—';
+  const addr=document.getElementById('c-addr')?.textContent||document.getElementById('d-addr')?.textContent||'—';
+  const estado=document.querySelector('#seg-estado .seg-btn.sel span')?.textContent||'—';
+  const edificio=document.querySelector('#seg-edificio .seg-btn.sel span')?.textContent||'—';
+  const lumi=document.querySelector('#seg-lumi .seg-btn.sel span')?.textContent||'—';
+  const dist=document.querySelector('#seg-dist .seg-btn.sel span')?.textContent||'—';
+  const micro=document.querySelector('#seg-micro .seg-btn.sel span')?.textContent||'—';
+  const cal=document.querySelector('#seg-cal .seg-btn.sel span')?.textContent||'—';
+  const epc=document.querySelector('#seg-epc .seg-btn.sel span')?.textContent||'—';
+  const anexos=[...document.querySelectorAll('#seg-anexos .seg-btn.sel')].map(b=>b.querySelector('span').textContent);
+  const testMedia=S.testigos.length>0?Math.round(S.testigos.reduce((a,t)=>a+t.pm2,0)/S.testigos.length).toLocaleString('es-ES')+' €/m²':'Sin testigos';
+
+  document.getElementById('informe-body').innerHTML=`
+    <div style="font-family:'Inter',sans-serif">
+
+      <div style="display:flex;align-items:center;justify-content:space-between;padding-bottom:16px;border-bottom:2px solid var(--cyan);margin-bottom:18px">
+        <div style="display:flex;align-items:center;gap:10px">
+          <svg viewBox="0 0 88 60" width="52" height="36" xmlns="http://www.w3.org/2000/svg">
+            <polygon points="16,0 88,0 72,60 0,60" fill="#00BCD4"/>
+            <polygon points="22,12 34,12 44,38 54,12 66,12 44,48" fill="white"/>
+            <circle cx="62" cy="26" r="12" fill="white"/>
+            <circle cx="62" cy="38" r="6" fill="#00BCD4"/>
+          </svg>
+          <div>
+            <div style="font-size:16px;font-weight:900;color:var(--text-primary)">${agencia}</div>
+            <div style="font-size:10px;color:var(--text-muted);font-weight:600;text-transform:uppercase;letter-spacing:.6px">Informe de Valoración</div>
+          </div>
+        </div>
+        <div style="text-align:right;font-size:11px;color:var(--text-muted)">
+          <div>${fecha}</div>
+          <div style="margin-top:2px">${agente}</div>
+          ${oficina?`<div>${oficina}</div>`:''}
+        </div>
+      </div>
+
+      <div style="background:var(--result-bg);border:1.5px solid var(--result-border);border-radius:16px;padding:20px;text-align:center;margin-bottom:14px">
+        <div style="font-size:10px;font-weight:700;color:var(--cyan-dark);text-transform:uppercase;letter-spacing:.9px;margin-bottom:8px">VALORACIÓN ESTIMADA</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:44px;font-weight:500;color:var(--result-value);letter-spacing:-2px;line-height:1">${precio}</div>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:6px;font-family:'JetBrains Mono',monospace">Rango orientativo: ${rango}</div>
+        <div style="font-size:11px;color:var(--text-secondary);margin-top:8px">Multiplicador aplicado: <strong>${mult}</strong></div>
+      </div>
+
+      <div class="inf-section">
+        <div class="inf-section-title">Datos del inmueble</div>
+        ${[['Tipo',tipo],['Superficie útil',m2!=='—'?m2+' m²':'—'],['Año construcción',anio],['Ubicación',addr]].map(([k,v])=>`<div class="inf-row"><span class="inf-lbl">${k}</span><span class="inf-val">${v}</span></div>`).join('')}
+      </div>
+
+      <div class="inf-section">
+        <div class="inf-section-title">Coeficientes aplicados</div>
+        ${[['Estado',estado,getVal('estado')],['Edificio / Planta',edificio,getVal('edificio')],['Luminosidad',lumi,getVal('lumi')],['Distribución',dist,getVal('dist')],['Microubicación',micro,getVal('micro')],['Calidades',cal,getVal('cal')],['Eficiencia energética',epc,getVal('epc')]].map(([k,v,coef])=>{const pct=((coef-1)*100).toFixed(1),sign=coef>=1?'+':'',cls=coef>=1?'up':'dn';return`<div class="inf-row"><span class="inf-lbl">${k}</span><div style="text-align:right"><span class="inf-val" style="font-size:12px">${v}</span><span class="inf-coef ${cls}">${sign}${pct}%</span></div></div>`;}).join('')}
+        <div class="inf-row"><span class="inf-lbl">Anexos</span><span class="inf-val" style="font-size:12px">${anexos.length>0?anexos.join(', '):'Ninguno'}</span></div>
+      </div>
+
+      ${S.testigos.length>0?`<div class="inf-section">
+        <div class="inf-section-title">Testigos de mercado (${S.testigos.length})</div>
+        <div class="inf-row"><span class="inf-lbl">Media €/m²</span><span class="inf-val">${testMedia}</span></div>
+        ${S.testigos.slice(0,4).map(t=>`<div class="inf-row"><span class="inf-lbl" style="max-width:55%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${t.dir}</span><span class="inf-val" style="font-family:'JetBrains Mono',monospace;font-size:12px">€${t.precio.toLocaleString('es-ES')} · ${t.pm2.toLocaleString('es-ES')}€/m²</span></div>`).join('')}
+      </div>`:''}
+
+      <div style="background:var(--input-bg);border-radius:9px;padding:12px;font-size:11px;color:var(--text-muted);line-height:1.6;margin-bottom:10px">
+        <strong style="color:var(--text-secondary)">Aviso legal:</strong> Valoración estimativa y orientativa. No constituye tasación oficial homologada. ${agencia} no se responsabiliza del uso de este informe como base de decisiones de compraventa sin verificación adicional.
+      </div>
+      <div style="text-align:center;font-size:10px;color:var(--text-muted)">${agencia} · ${fecha} · VOhome Valoración</div>
+    </div>`;
+
+  openOverlay('ov-informe');
+}
+
+/* ══ OVERLAYS ══ */
+function openOverlay(id){document.getElementById(id).classList.add('show');document.body.style.overflow='hidden';}
+function closeOverlay(id){document.getElementById(id).classList.remove('show');document.body.style.overflow='';}
+
+/* ══ CONFIG ══ */
+function openConfig(){
+  const c=S.config;
+  if(c.nombre)document.getElementById('cfg-nombre').value=c.nombre;
+  if(c.agencia)document.getElementById('cfg-agencia').value=c.agencia;
+  if(c.oficina)document.getElementById('cfg-oficina').value=c.oficina;
+  if(c.municipio)document.getElementById('cfg-municipio').value=c.municipio;
+  if(c.pm2)document.getElementById('cfg-pm2').value=c.pm2;
+  setCfgModo(c.modoBase||'total');
+  openOverlay('ov-config');
+}
+function setCfgModo(m){document.getElementById('cfg-modo-total').classList.toggle('sel',m==='total');document.getElementById('cfg-modo-m2').classList.toggle('sel',m==='m2');S.config.modoBase=m;}
+function saveConfig(){
+  S.config.nombre=document.getElementById('cfg-nombre').value.trim();
+  S.config.agencia=document.getElementById('cfg-agencia').value.trim();
+  S.config.oficina=document.getElementById('cfg-oficina').value.trim();
+  S.config.municipio=document.getElementById('cfg-municipio').value.trim();
+  S.config.pm2=document.getElementById('cfg-pm2').value;
+  localStorage.setItem('voh_config',JSON.stringify(S.config));
+  applyConfig();closeOverlay('ov-config');showToast('Configuración guardada ✓');
+}
+
+/* ══ TESTIGOS ══ */
+function selTog(btn,gid,hid){document.getElementById(gid).querySelectorAll('.tog-btn').forEach(b=>b.classList.remove('sel'));btn.classList.add('sel');document.getElementById(hid).value=btn.textContent.trim();}
+function openAddForm(){openOverlay('ov-testigo');}
+function closeAddForm(){closeOverlay('ov-testigo');}
+function saveTestigo(){
+  const dir=document.getElementById('t-dir').value.trim(),m2=parseFloat(document.getElementById('t-m2').value),precio=parseFloat(document.getElementById('t-precio').value);
+  if(!dir||!m2||!precio){showToast('Dirección, m² y precio son obligatorios');return;}
+  const t={id:Date.now(),dir,zona:document.getElementById('t-zona').value.trim()||'—',mun:document.getElementById('t-mun').value.trim()||'—',tipo:document.getElementById('t-tipo').value,m2,hab:document.getElementById('t-hab').value||'—',planta:document.getElementById('t-planta').value||'—',anio:document.getElementById('t-anio').value||'—',estado:document.getElementById('t-estado').value,precio,pm2:Math.round(precio/m2),fuente:document.getElementById('t-fuente').value,notas:document.getElementById('t-notas').value.trim(),fecha:new Date().toLocaleDateString('es-ES',{day:'2-digit',month:'short',year:'numeric'})};
+  S.testigos.unshift(t);localStorage.setItem('voh_testigos',JSON.stringify(S.testigos));
+  ['t-dir','t-zona','t-mun','t-m2','t-hab','t-planta','t-anio','t-precio','t-notas'].forEach(id=>{document.getElementById(id).value='';});
+  renderTestigos();updateBadge();closeOverlay('ov-testigo');showToast('Testigo guardado ✓');updateTestigosHint();
+}
+function borrarTestigo(id){S.testigos=S.testigos.filter(t=>t.id!==id);localStorage.setItem('voh_testigos',JSON.stringify(S.testigos));renderTestigos();updateBadge();updateTestigosHint();}
+function filtrar(chip,tipo){document.querySelectorAll('.f-chip').forEach(c=>c.classList.remove('active'));chip.classList.add('active');S.filtro=tipo;renderTestigos();}
+function renderTestigos(){
+  const con=document.getElementById('test-container'),empty=document.getElementById('empty-test'),fr=document.getElementById('filter-row');
+  const lista=S.filtro==='todos'?S.testigos:S.testigos.filter(t=>t.tipo.includes(S.filtro));
+  if(S.testigos.length===0){fr.style.display='none';document.getElementById('stats-bar').classList.remove('show');con.innerHTML='';con.appendChild(empty);empty.style.display='block';return;}
+  empty.style.display='none';fr.style.display='flex';updateStats();
+  con.innerHTML=lista.map(t=>`
+    <div class="t-card">
+      <div class="t-top">
+        <div class="t-icon"><i class="ti ti-building"></i></div>
+        <div class="t-info"><div class="t-dir">${t.dir}</div><div class="t-meta">${t.zona} · ${t.mun}</div></div>
+        <div style="text-align:right;flex-shrink:0"><div class="t-price">€${t.precio.toLocaleString('es-ES')}</div><div class="t-pm2">${t.pm2.toLocaleString('es-ES')} €/m²</div></div>
+      </div>
+      <div class="t-tags"><span class="tag">${t.tipo}</span><span class="tag">${t.m2} m²</span>${t.hab!=='—'?`<span class="tag">${t.hab} hab.</span>`:''}<span class="tag estado">${t.estado}</span><span class="tag">${t.fuente}</span></div>
+      ${t.notas?`<div style="font-size:12px;color:var(--text-secondary);margin-bottom:10px;padding:8px;background:var(--input-bg);border-radius:8px">${t.notas}</div>`:''}
+      <div class="t-footer"><span class="t-date"><i class="ti ti-calendar" style="font-size:11px"></i> ${t.fecha}</span><button class="icon-btn" onclick="borrarTestigo(${t.id})" aria-label="Eliminar"><i class="ti ti-trash"></i></button></div>
+    </div>`).join('');
+  con.appendChild(empty);
+}
+function updateStats(){
+  const bar=document.getElementById('stats-bar');
+  if(S.testigos.length<2){bar.classList.remove('show');return;}
+  bar.classList.add('show');
+  const pms=S.testigos.map(t=>t.pm2);
+  document.getElementById('st-media').textContent=Math.round(pms.reduce((a,b)=>a+b,0)/pms.length).toLocaleString('es-ES');
+  document.getElementById('st-rango').textContent=Math.min(...pms).toLocaleString('es-ES')+'–'+Math.max(...pms).toLocaleString('es-ES');
+  document.getElementById('st-precio').textContent='€'+Math.round(S.testigos.reduce((a,t)=>a+t.precio,0)/S.testigos.length).toLocaleString('es-ES');
+  document.getElementById('st-m2').textContent=Math.round(S.testigos.reduce((a,t)=>a+t.m2,0)/S.testigos.length)+' m²';
+}
+function updateBadge(){const n=S.testigos.length;document.getElementById('nav-test-lbl').textContent=n>0?`Testigos (${n})`:'Testigos';}
+function updateTestigosHint(){const hint=document.getElementById('testigos-hint');if(S.testigos.length>0){const med=Math.round(S.testigos.reduce((a,t)=>a+t.pm2,0)/S.testigos.length);hint.textContent=`${S.testigos.length} testigo${S.testigos.length>1?'s':''} · media ${med.toLocaleString('es-ES')} €/m² · ponderado al 50%`;hint.style.display='block';}else hint.style.display='none';}
+function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+
+renderTestigos();updateBadge();updateTestigosHint();
+</script>
+</body>
+</html>
